@@ -1,0 +1,2 @@
+package com.example.quartz_demo_duplicate.job;public class SimpleJavaJob {
+}

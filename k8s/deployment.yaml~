@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-quartz
+  labels:
+    app: demo-quartz
+spec:
+  replicas: 1  # ⚠️ Ghi chú: nhiều replica sẽ gây duplicate job nếu chưa cấu hình Quartz clustering!
+  selector:
+    matchLabels:
+      app: demo-quartz
+  template:
+    metadata:
+      labels:
+        app: demo-quartz
+    spec:
+      containers:
+        - name: demo-quartz
+          image: gcr.io/my-blog-454607/demo-quartz:latest # ⚠️ sẽ được override bằng tag từ GitHub Actions
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
