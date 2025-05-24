@@ -16,8 +16,10 @@ spring.quartz.properties.org.quartz.jobStore.isClustered=true
 spring.quartz.properties.org.quartz.jobStore.clusterCheckinInterval=10000
 spring.quartz.properties.org.quartz.jobStore.driverDelegateClass=org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
-org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+
 
 
 logging.level.org.springframework=DEBUG
 logging.level.org.quartz=DEBUG
+
+org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
