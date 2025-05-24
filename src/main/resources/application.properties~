@@ -28,4 +28,5 @@ spring.quartz.properties.org.quartz.dataSource.myDS.password=123456
 spring.quartz.properties.org.quartz.dataSource.myDS.maxConnections=10
 
 # Logging
-logging.level.root=INFO
+logging.level.org.springframework=DEBUG
+logging.level.org.quartz=DEBUG
