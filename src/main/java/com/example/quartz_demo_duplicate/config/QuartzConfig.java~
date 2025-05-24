@@ -4,22 +4,34 @@ import com.example.quartz_demo_duplicate.job.SimpleJob;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import javax.sql.DataSource;
 
 @Configuration
 public class QuartzConfig {
 
-    private final SchedulerFactoryBean schedulerFactoryBean;
+    private final DataSource dataSource;
 
     @Autowired
-    public QuartzConfig(SchedulerFactoryBean schedulerFactoryBean) {
-        this.schedulerFactoryBean = schedulerFactoryBean;
+    public QuartzConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Bean
+    public SchedulerFactoryBean schedulerFactoryBean() {
+        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+        factory.setDataSource(dataSource);
+        factory.setSchedulerName("DemoScheduler");
+        factory.setStartupDelay(2);
+        factory.setAutoStartup(true);
+        return factory;
     }
 
     @PostConstruct
     public void scheduleJob() throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        Scheduler scheduler = schedulerFactoryBean().getScheduler();
         JobKey jobKey = new JobKey("simpleJob", "group1");
         TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
 

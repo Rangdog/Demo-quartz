@@ -7,16 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+
 import javax.sql.DataSource;
 
 @Configuration
 public class QuartzConfig {
 
     private final DataSource dataSource;
+    private final Scheduler scheduler;
 
     @Autowired
-    public QuartzConfig(DataSource dataSource) {
+    public QuartzConfig(DataSource dataSource, Scheduler scheduler) {
         this.dataSource = dataSource;
+        this.scheduler = scheduler;
     }
 
     @Bean
@@ -31,7 +34,6 @@ public class QuartzConfig {
 
     @PostConstruct
     public void scheduleJob() throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean().getScheduler();
         JobKey jobKey = new JobKey("simpleJob", "group1");
         TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
 
