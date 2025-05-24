@@ -4,32 +4,16 @@ import com.example.quartz_demo_duplicate.job.SimpleJob;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
+@Component
+public class JobScheduler {
 
-@Configuration
-public class QuartzConfig {
-
-    private final DataSource dataSource;
     private final Scheduler scheduler;
 
     @Autowired
-    public QuartzConfig(DataSource dataSource, Scheduler scheduler) {
-        this.dataSource = dataSource;
+    public JobScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
-    }
-
-    @Bean
-    public SchedulerFactoryBean schedulerFactoryBean() {
-        SchedulerFactoryBean factory = new SchedulerFactoryBean();
-        factory.setDataSource(dataSource);
-        factory.setSchedulerName("DemoScheduler");
-        factory.setStartupDelay(2);
-        factory.setAutoStartup(true);
-        return factory;
     }
 
     @PostConstruct
