@@ -14,13 +14,13 @@ spring.quartz.wait-for-jobs-to-complete-on-shutdown=true
 
 # Quartz clustering config
 spring.quartz.properties.org.quartz.jobStore.class=org.quartz.impl.jdbcjobstore.JobStoreTX
-spring.quartz.properties.org.quartz.jobStore.clustered=true
+spring.quartz.properties.org.quartz.jobStore.isClustered=true
 spring.quartz.properties.org.quartz.jobStore.clusterCheckinInterval=10000
 spring.quartz.properties.org.quartz.jobStore.driverDelegateClass=org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 spring.quartz.properties.org.quartz.jobStore.dataSource=myDS
 spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
 
-# Quartz internal DataSource mapping
+# Quartz internal DataSource mapping (note: "url" is lowercase)
 spring.quartz.properties.org.quartz.dataSource.myDS.driver=org.postgresql.Driver
 spring.quartz.properties.org.quartz.dataSource.myDS.url=jdbc:postgresql://postgres:5432/quartz_demo
 spring.quartz.properties.org.quartz.dataSource.myDS.user=postgres
