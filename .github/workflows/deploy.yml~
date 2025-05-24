@@ -39,6 +39,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
+          distribution: 'temurin' # <--- phần bị thiếu
       - name: Build with Maven
         run: mvn clean package -DskipTests
       - name: Build and Push Docker image
@@ -48,5 +49,8 @@ jobs:
           docker push $IMAGE
       - name: Deploy to GKE
         run: |
+          kubectl apply -f k8s/postgres-secret.yaml
+          kuvectl apply -f k8s/postgres-deployment.yaml
+          kubectl apply -f k8s/postgres-service.yaml
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml

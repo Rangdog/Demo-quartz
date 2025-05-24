@@ -5,7 +5,7 @@ metadata:
   labels:
     app: demo-quartz
 spec:
-  replicas: 2  # ⚠️ Ghi chú: nhiều replica sẽ gây duplicate job nếu chưa cấu hình Quartz clustering!
+  replicas: 2
   selector:
     matchLabels:
       app: demo-quartz
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: demo-quartz
-          image: gcr.io/my-blog-454607/demo-quartz:latest # ⚠️ sẽ được override bằng tag từ GitHub Actions
+          image: gcr.io/my-blog-454607/demo-quartz:latest
           ports:
             - containerPort: 8080
           resources:
@@ -29,3 +29,14 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/quartz_demo
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: org.postgresql.Driver

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - demo-quartz-JDBC-JobStore
   pull_request:
     branches:
       - main
@@ -49,5 +50,8 @@ jobs:
           docker push $IMAGE
       - name: Deploy to GKE
         run: |
+          kubectl apply -f k8s/postgres-secret.yaml
+          kuvectl apply -f k8s/postgres-deployment.yaml
+          kubectl apply -f k8s/postgres-service.yaml
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
