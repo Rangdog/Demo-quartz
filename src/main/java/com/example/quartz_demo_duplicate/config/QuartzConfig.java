@@ -3,34 +3,36 @@ package com.example.quartz_demo_duplicate.config;
 import com.example.quartz_demo_duplicate.job.SimpleJob;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 @Configuration
-@RequiredArgsConstructor
 public class QuartzConfig {
 
-    private final Scheduler scheduler;
+    private final SchedulerFactoryBean schedulerFactoryBean;
+
+    @Autowired
+    public QuartzConfig(SchedulerFactoryBean schedulerFactoryBean) {
+        this.schedulerFactoryBean = schedulerFactoryBean;
+    }
 
     @PostConstruct
     public void scheduleJob() throws SchedulerException {
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
         JobKey jobKey = new JobKey("simpleJob", "group1");
         TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
 
-        // Nếu job đã tồn tại, không làm gì cả
         if (scheduler.checkExists(jobKey)) {
             System.out.println("✅ Job đã tồn tại, không tạo lại.");
             return;
         }
 
-        // Tạo JobDetail
         JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class)
                 .withIdentity(jobKey)
                 .storeDurably()
                 .build();
 
-        // Tạo Trigger
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
@@ -39,9 +41,7 @@ public class QuartzConfig {
                         .repeatForever())
                 .build();
 
-        // Đăng ký vào Scheduler
         scheduler.scheduleJob(jobDetail, trigger);
         System.out.println("📌 Đăng ký job + trigger thành công.");
     }
 }
-
