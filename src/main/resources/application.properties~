@@ -20,11 +20,11 @@ spring.quartz.properties.org.quartz.jobStore.driverDelegateClass=org.quartz.impl
 spring.quartz.properties.org.quartz.jobStore.dataSource=myDS
 spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
 
-# Quartz internal DataSource mapping (chú ý ch? "url" vi?t th??ng)
+# Quartz internal DataSource mapping
 spring.quartz.properties.org.quartz.dataSource.myDS.driver=org.postgresql.Driver
 spring.quartz.properties.org.quartz.dataSource.myDS.url=jdbc:postgresql://postgres:5432/quartz_demo
 spring.quartz.properties.org.quartz.dataSource.myDS.user=postgres
-spring.quartz.properties.org.quartz.dataSource.myDS.password=your_password
+spring.quartz.properties.org.quartz.dataSource.myDS.password=123456
 spring.quartz.properties.org.quartz.dataSource.myDS.maxConnections=10
 
 # Logging
