@@ -2,6 +2,7 @@ package com.example.quartz_demo_duplicate.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import javax.sql.DataSource;
@@ -22,6 +23,8 @@ public class QuartzConfig {
         factory.setSchedulerName("DemoScheduler");
         factory.setStartupDelay(2);
         factory.setAutoStartup(true);
+        // Đọc cấu hình quartz.properties
+        factory.setConfigLocation(new ClassPathResource("quartz.properties"));
         return factory;
     }
 }

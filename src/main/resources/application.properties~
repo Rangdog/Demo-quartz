@@ -6,7 +6,7 @@ spring.datasource.password=123456
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 spring.quartz.job-store-type=jdbc
-spring.quartz.jdbc.initialize-schema=embedded
+spring.quartz.jdbc.initialize-schema=never
 spring.quartz.scheduler-name=DemoScheduler
 spring.quartz.wait-for-jobs-to-complete-on-shutdown=true
 
@@ -16,10 +16,8 @@ spring.quartz.properties.org.quartz.jobStore.isClustered=true
 spring.quartz.properties.org.quartz.jobStore.clusterCheckinInterval=10000
 spring.quartz.properties.org.quartz.jobStore.driverDelegateClass=org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
+org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 
-
-spring.quartz.properties.org.quartz.jobStore.dataSource=myDS
-spring.quartz.properties.org.quartz.dataSource.myDS.connectionProvider.class=org.springframework.scheduling.quartz.SpringConnectionProvider
 
 logging.level.org.springframework=DEBUG
 logging.level.org.quartz=DEBUG
