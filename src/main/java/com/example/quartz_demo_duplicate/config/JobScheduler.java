@@ -3,6 +3,7 @@ package com.example.quartz_demo_duplicate.config;
 import com.example.quartz_demo_duplicate.job.SimpleJob;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +36,9 @@ public class JobScheduler {
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(10)
+                        .withIntervalInSeconds(60)
                         .repeatForever()
-                        .withMisfireHandlingInstructionFireNow()
+                        .withMisfireHandlingInstructionIgnoreMisfires()
                 )
                 .build();
 

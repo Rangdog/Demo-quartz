@@ -4,7 +4,7 @@ import org.quartz.JobExecutionContext;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 
-public class SimpleJob {
+public class SimpleJob  implements Job{
     @Override
     public void execute(JobExecutionContext context) {
         try {
