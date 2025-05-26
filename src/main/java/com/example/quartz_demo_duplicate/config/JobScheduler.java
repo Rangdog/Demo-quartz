@@ -35,8 +35,10 @@ public class JobScheduler {
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(60)
-                        .repeatForever())
+                        .withIntervalInSeconds(10)
+                        .repeatForever()
+                        .withMisfireHandlingInstructionFireNow()
+                )
                 .build();
 
         scheduler.scheduleJob(jobDetail, trigger);
