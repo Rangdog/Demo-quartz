@@ -19,11 +19,6 @@ public class JobScheduler {
 
     @PostConstruct
     public void scheduleJob() throws SchedulerException {
-        // Xoá tất cả job cũ cho demo sạch
-        for (JobKey oldJobKey : scheduler.getJobKeys(GroupMatcher.anyGroup())) {
-            scheduler.deleteJob(oldJobKey);
-            System.out.println("❌ Đã xóa job cũ: " + oldJobKey);
-        }
         JobKey jobKey = new JobKey("simpleJob", "group1");
         TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
 
@@ -41,9 +36,9 @@ public class JobScheduler {
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(60)
+                        .withIntervalInSeconds(10)
                         .repeatForever()
-                        .withMisfireHandlingInstructionIgnoreMisfires()
+                        .withMisfireHandlingInstructionNowWithExistingCount()
                 )
                 .build();
 
