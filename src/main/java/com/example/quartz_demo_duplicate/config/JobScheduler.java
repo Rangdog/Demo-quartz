@@ -38,7 +38,7 @@ public class JobScheduler {
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInSeconds(30)
                         .withRepeatCount(4) // Ví dụ chạy 5 lần tất cả (0-based)
-                        .withMisfireHandlingInstructionNextWithRemainingCount()
+                        .withMisfireHandlingInstructionNowWithExistingCount()
                 )
                 .build();
 
