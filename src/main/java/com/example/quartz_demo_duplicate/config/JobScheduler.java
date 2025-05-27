@@ -35,10 +35,8 @@ public class JobScheduler {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
-                .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(30)
-                        .withRepeatCount(4) // Ví dụ chạy 5 lần tất cả (0-based)
-                        .withMisfireHandlingInstructionNowWithRemainingCount()
+                .withSchedule(CronScheduleBuilder.cronSchedule("0/30 * * * * ?")
+                        .withMisfireHandlingInstructionIgnoreMisfires()
                 )
                 .build();
 
