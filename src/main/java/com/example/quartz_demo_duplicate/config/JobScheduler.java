@@ -36,7 +36,7 @@ public class JobScheduler {
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
                 .withSchedule(CronScheduleBuilder.cronSchedule("0/30 * * * * ?")
-                        .withMisfireHandlingInstructionIgnoreMisfires()
+                        .withMisfireHandlingInstructionDoNothing()
                 )
                 .build();
 
