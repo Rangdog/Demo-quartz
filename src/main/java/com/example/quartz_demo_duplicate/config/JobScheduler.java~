@@ -3,9 +3,15 @@ package com.example.quartz_demo_duplicate.config;
 import com.example.quartz_demo_duplicate.job.SimpleJob;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
+import org.quartz.impl.calendar.HolidayCalendar;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Set;
 
 @Component
 public class JobScheduler {
@@ -19,41 +25,63 @@ public class JobScheduler {
 
     @PostConstruct
     public void init() throws Exception {
-        // Đăng ký các listener thủ công như trong QuartzMain
-        scheduler.getListenerManager().addJobListener(new MyJobListener());
-        scheduler.getListenerManager().addTriggerListener(new MyTriggerListener());
-        scheduler.getListenerManager().addSchedulerListener(new MySchedulerListener());
+        System.out.println("⚠️ Bắt đầu xóa tất cả job và trigger...");
 
-        // Tạo SimpleJob
-        JobDetail simpleJob = JobBuilder.newJob(SimpleJob.class)
-                .withIdentity("simpleJob", "group1")
+        // Xóa tất cả job hiện có
+        for (String groupName : scheduler.getJobGroupNames()) {
+            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName));
+            for (JobKey jobKey : jobKeys) {
+                scheduler.deleteJob(jobKey);
+                System.out.println("🗑️ Đã xóa job: " + jobKey);
+            }
+        }
+
+        String calendarName = "holidayCalendar";
+        if (scheduler.getCalendarNames().contains(calendarName)) {
+            boolean deleted = scheduler.deleteCalendar(calendarName);
+            if (deleted) {
+                System.out.println("🗑️ Đã xóa calendar: " + calendarName);
+            } else {
+                System.out.println("❌ Không thể xóa calendar: " + calendarName);
+            }
+        } else {
+            System.out.println("ℹ️ Không tìm thấy calendar để xóa.");
+        }
+
+        // ✅ Lấy ngày hôm nay (chỉ lấy phần ngày, không có giờ phút)
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        tomorrow.set(Calendar.HOUR_OF_DAY, 0);
+        tomorrow.set(Calendar.MINUTE, 0);
+        tomorrow.set(Calendar.SECOND, 0);
+        tomorrow.set(Calendar.MILLISECOND, 0);
+        Date startAt = tomorrow.getTime();
+
+        // ✅ Tạo và thêm HolidayCalendar với ngày hôm nay
+        if (!scheduler.getCalendarNames().contains(calendarName)) {
+            HolidayCalendar holidays = new HolidayCalendar();
+            holidays.addExcludedDate(todayDate);  // loại trừ hôm nay
+
+            scheduler.addCalendar(calendarName, holidays, false, false);
+            System.out.println("📅 Đã thêm holidayCalendar loại trừ: " + todayDate);
+        } else {
+            System.out.println("⚠️ holidayCalendar đã tồn tại, bỏ qua.");
+        }
+
+        // 🎯 Đăng ký Job sử dụng Calendar (trigger sẽ KHÔNG chạy nếu hôm nay bị loại)
+        JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class)
+                .withIdentity("immediateJob", "calendarGroup")
                 .build();
 
-        Trigger simpleTrigger = TriggerBuilder.newTrigger()
-                .withIdentity("simpleTrigger", "group1")
-                .startNow()
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity("immediateTrigger", "calendarGroup")
+                .startNow()  // chạy ngay
+                .modifiedByCalendar(calendarName)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(10)
-                        .withRepeatCount(2))
+                        .withRepeatCount(0)) // chỉ chạy 1 lần duy nhất
                 .build();
 
-        // Tạo CronJob
-        JobDetail cronJob = JobBuilder.newJob(CronJob.class)
-                .withIdentity("cronJob", "group2")
-                .build();
-
-        Trigger cronTrigger = TriggerBuilder.newTrigger()
-                .withIdentity("cronTrigger", "group2")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * * * ?"))
-                .build();
-
-        // Đăng ký với scheduler
-        scheduler.scheduleJob(simpleJob, simpleTrigger);
-        scheduler.scheduleJob(cronJob, cronTrigger);
-
-        // Bắt đầu scheduler (cần nếu chưa start tự động)
-        scheduler.start();
-
-        System.out.println("✅ Jobs & triggers scheduled in Spring Boot context.");
+        scheduler.scheduleJob(jobDetail, trigger);
+        System.out.println("✅ Đăng ký job với calendar xong. Nếu job KHÔNG chạy, chứng tỏ hôm nay bị chặn.");
     }
 }
