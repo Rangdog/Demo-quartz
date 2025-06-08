@@ -1,6 +1,10 @@
 package com.example.quartz_demo_duplicate.config;
 
+import com.example.quartz_demo_duplicate.job.CronJob;
 import com.example.quartz_demo_duplicate.job.SimpleJob;
+import com.example.quartz_demo_duplicate.listener.MyJobListener;
+import com.example.quartz_demo_duplicate.listener.MySchedulerListener;
+import com.example.quartz_demo_duplicate.listener.MyTriggerListener;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -18,29 +22,42 @@ public class JobScheduler {
     }
 
     @PostConstruct
-    public void scheduleJob() throws SchedulerException {
-        JobKey jobKey = new JobKey("simpleJob", "group1");
-        TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
+    public void init() throws Exception {
+        // Đăng ký các listener thủ công như trong QuartzMain
+        scheduler.getListenerManager().addJobListener(new MyJobListener());
+        scheduler.getListenerManager().addTriggerListener(new MyTriggerListener());
+        scheduler.getListenerManager().addSchedulerListener(new MySchedulerListener());
 
-        if (scheduler.checkExists(jobKey)) {
-            System.out.println("✅ Job đã tồn tại, không tạo lại.");
-            return;
-        }
-
-        JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class)
-                .withIdentity(jobKey)
-                .storeDurably()
+        // Tạo SimpleJob
+        JobDetail simpleJob = JobBuilder.newJob(SimpleJob.class)
+                .withIdentity("simpleJob", "group1")
                 .build();
 
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(triggerKey)
-                .forJob(jobDetail)
-                .withSchedule(CronScheduleBuilder.cronSchedule("0/30 * * * * ?")
-                        .withMisfireHandlingInstructionFireAndProceed()
-                )
+        Trigger simpleTrigger = TriggerBuilder.newTrigger()
+                .withIdentity("simpleTrigger", "group1")
+                .startNow()
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+                        .withIntervalInSeconds(10)
+                        .withRepeatCount(2))
                 .build();
 
-        scheduler.scheduleJob(jobDetail, trigger);
-        System.out.println("📌 Đăng ký job + trigger thành công.");
+        // Tạo CronJob
+        JobDetail cronJob = JobBuilder.newJob(CronJob.class)
+                .withIdentity("cronJob", "group2")
+                .build();
+
+        Trigger cronTrigger = TriggerBuilder.newTrigger()
+                .withIdentity("cronTrigger", "group2")
+                .withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * * * ?"))
+                .build();
+
+        // Đăng ký với scheduler
+        scheduler.scheduleJob(simpleJob, simpleTrigger);
+        scheduler.scheduleJob(cronJob, cronTrigger);
+
+        // Bắt đầu scheduler (cần nếu chưa start tự động)
+        scheduler.start();
+
+        System.out.println("✅ Jobs & triggers scheduled in Spring Boot context.");
     }
 }
