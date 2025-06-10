@@ -33,11 +33,11 @@ public class JobScheduler {
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(triggerKey)
-                .forJob(jobDetail)
+                .build()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInSeconds(10)
                         .repeatForever()
-                        .withMisfireHandlingInstructionNowWithExistingCount()
+                        .withMisfireHandlingInstructionFireNow()
                 )
                 .build();
 
