@@ -33,8 +33,9 @@ public class JobScheduler {
                 .build();
 
         Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(triggerKey)
+                .withIdentity("misfireTrigger", "group1")
                 .forJob(jobDetail)
+                .startNow()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInSeconds(5)
                         .repeatForever()
