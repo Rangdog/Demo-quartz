@@ -1,0 +1,15 @@
+spring.application.name=quartz-demo-duplicate
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/quartz_cluster
+spring.datasource.username=quartz
+spring.datasource.password=quartz123
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.quartz.job-store-type=jdbc
+spring.quartz.jdbc.initialize-schema=never
+spring.quartz.properties.org.quartz.jobStore.isClustered=true
+spring.quartz.properties.org.quartz.jobStore.clusterCheckinInterval=20000
+spring.quartz.properties.org.quartz.scheduler.instanceId=AUTO
+spring.quartz.properties.org.quartz.jobStore.driverDelegateClass=org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+
+logging.level.org.quartz.impl.jdbcjobstore=DEBUG

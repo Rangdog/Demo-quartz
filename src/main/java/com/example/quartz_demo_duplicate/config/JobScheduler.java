@@ -3,8 +3,11 @@ package com.example.quartz_demo_duplicate.config;
 import com.example.quartz_demo_duplicate.job.SimpleJob;
 import jakarta.annotation.PostConstruct;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 public class JobScheduler {
@@ -18,6 +21,14 @@ public class JobScheduler {
 
     @PostConstruct
     public void scheduleJob() throws SchedulerException {
+        // Xóa tất cả job hiện có
+        for (String groupName : scheduler.getJobGroupNames()) {
+            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName));
+            for (JobKey jobKey : jobKeys) {
+                scheduler.deleteJob(jobKey);
+                System.out.println("🗑️ Đã xóa job: " + jobKey);
+            }
+        }
         JobKey jobKey = new JobKey("simpleJob", "group1");
         TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
 
