@@ -11,6 +11,8 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class JobScheduler {
 
@@ -23,6 +25,14 @@ public class JobScheduler {
 
     @PostConstruct
     public void init() throws Exception {
+        // Xóa tất cả job hiện có
+        for (String groupName : scheduler.getJobGroupNames()) {
+            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName));
+            for (JobKey jobKey : jobKeys) {
+                scheduler.deleteJob(jobKey);
+                System.out.println("🗑️ Đã xóa job: " + jobKey);
+            }
+        }
         // Đăng ký các listener thủ công như trong QuartzMain
         scheduler.getListenerManager().addJobListener(new MyJobListener());
         scheduler.getListenerManager().addTriggerListener(new MyTriggerListener());
@@ -37,7 +47,7 @@ public class JobScheduler {
                 .withIdentity("simpleTrigger", "group1")
                 .startNow()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(10)
+                        .withIntervalInSeconds(30)
                         .withRepeatCount(2))
                 .build();
 
