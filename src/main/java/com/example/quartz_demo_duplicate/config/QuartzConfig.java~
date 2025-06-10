@@ -2,6 +2,7 @@ package com.example.quartz_demo_duplicate.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import javax.sql.DataSource;

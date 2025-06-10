@@ -46,7 +46,7 @@ public class JobScheduler {
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(60)
+                        .withIntervalInSeconds(10)
                         .repeatForever())
                 .build();
 
