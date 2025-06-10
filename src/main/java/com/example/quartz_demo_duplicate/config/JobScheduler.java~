@@ -6,6 +6,8 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class JobScheduler {
 
@@ -22,7 +24,14 @@ public class JobScheduler {
         TriggerKey triggerKey = new TriggerKey("simpleJobTrigger", "group1");
 
         if (scheduler.checkExists(jobKey)) {
-            System.out.println("✅ Job đã tồn tại, không tạo lại.");
+            System.out.println("⚠️ Job đã tồn tại.");
+
+            List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+            System.out.println("🔍 Số lượng trigger gắn với job: " + triggers.size());
+            for (Trigger t : triggers) {
+                System.out.println("🔸 Trigger: " + t.getKey());
+            }
+
             return;
         }
 
@@ -33,7 +42,7 @@ public class JobScheduler {
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(triggerKey)
-                .build()
+                .forJob(jobDetail)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInSeconds(10)
                         .repeatForever()
