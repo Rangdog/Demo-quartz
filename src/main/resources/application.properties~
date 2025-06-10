@@ -16,7 +16,7 @@ spring.quartz.properties.org.quartz.scheduler.instanceId=AUTO
 spring.quartz.properties.org.quartz.jobStore.class=org.quartz.impl.jdbcjobstore.JobStoreTX
 spring.quartz.properties.org.quartz.jobStore.isClustered=true
 spring.quartz.properties.org.quartz.jobStore.clusterCheckinInterval=10000
-spring.quartz.properties.org.quartz.jobStore.driverDelegateClass=org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+spring.quartz.job-store.driverDelegateClass=org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
 
 
