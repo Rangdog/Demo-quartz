@@ -7,6 +7,10 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 @Component
 public class JobScheduler {
 
@@ -31,10 +35,13 @@ public class JobScheduler {
                 .withIdentity(jobKey)
                 .storeDurably()
                 .build();
+        ZonedDateTime endTime = ZonedDateTime.now(ZoneId.systemDefault()).plusHours(2);
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(triggerKey)
                 .forJob(jobDetail)
+                .startNow()
+                .endAt(Date.from(endTime.toInstant()))
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInSeconds(10)
                         .withRepeatCount(9) // Ví dụ chạy 5 lần tất cả (0-based)
