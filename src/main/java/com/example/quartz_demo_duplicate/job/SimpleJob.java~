@@ -5,6 +5,8 @@ import org.quartz.*;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
 public class SimpleJob implements Job {
     @Override
     public void execute(JobExecutionContext context) {
