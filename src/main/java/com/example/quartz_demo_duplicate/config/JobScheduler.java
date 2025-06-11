@@ -41,7 +41,7 @@ public class JobScheduler {
                         .withMisfireHandlingInstructionNextWithRemainingCount()
                 )
                 .build();
-
+        System.out.println("Misfire Instruction (new trigger): " + trigger.getMisfireInstruction());
         scheduler.scheduleJob(jobDetail, trigger);
         System.out.println("📌 Đăng ký job + trigger thành công.");
     }
